@@ -5,6 +5,7 @@ import logo from '../../assets/images/bancodobrasil.png';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
+
 const styles = theme => ({
   title: {
     flexGrow: 1
@@ -15,14 +16,14 @@ const styles = theme => ({
 });
 
 const AppNavbar = props => {
-  const { classes } = props;
+  const { classes, handleDrawerToggle } = props;
   return (
     <AppBar className={classes.appBar}>
       <Toolbar>
         <IconButton
           color="inherit"
           aria-label="Open drawer"
-          /* onClick={this.handleDrawerToggle}*/
+          onClick={handleDrawerToggle}
           className={classes.menuButton}
         >
           <MenuIcon />

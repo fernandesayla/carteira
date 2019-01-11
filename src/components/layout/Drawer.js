@@ -1,15 +1,17 @@
 import React from 'react';
+import AppBar from '@material-ui/core/AppBar';
+import { Toolbar } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import logo from '../../assets/images/bancodobrasil.png';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Drawer,
   List,
   ListItem,
   Hidden,
-  Divider,
   ListItemText
 } from '@material-ui/core';
-
+import { Link } from 'react-router-dom';
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -23,7 +25,8 @@ const styles = theme => ({
     }
   },
   drawerPaper: {
-    width: drawerWidth
+    width: drawerWidth,
+    paddingTop: 70
   }
 });
 
@@ -33,22 +36,17 @@ class DrawerMenu extends React.Component {
 
     const drawer = (
       <div>
-        <div className={classes.toolbar} />
-        <Divider />
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
+          <Link to="/carteira" className="nav-link">
+            <ListItem button>
+              <ListItemText primary="Home" />
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
+          </Link>
+          <Link to="/carteira/cadastrar" className="nav-link">
+            <ListItem button>
+              <ListItemText primary="Cadastrar" />
             </ListItem>
-          ))}
+          </Link>
         </List>
       </div>
     );
@@ -59,13 +57,18 @@ class DrawerMenu extends React.Component {
           <Drawer
             container={this.props.container}
             variant="temporary"
-            anchor="right"
+            anchor="left"
             open={mobileOpen}
             onClose={handleDrawerToggle}
             classes={{
               paper: classes.drawerPaper
             }}
           >
+            <AppBar className={classes.appBar}>
+              <Toolbar>
+                <img style={{ margin: 8 }} src={logo} alt="BB" />
+              </Toolbar>
+            </AppBar>
             {drawer}
           </Drawer>
         </Hidden>
@@ -77,6 +80,11 @@ class DrawerMenu extends React.Component {
             variant="permanent"
             open
           >
+            <AppBar className={classes.appBar}>
+              <Toolbar>
+                <img style={{ margin: 8 }} src={logo} alt="BB" />
+              </Toolbar>
+            </AppBar>
             {drawer}
           </Drawer>
         </Hidden>
@@ -86,8 +94,7 @@ class DrawerMenu extends React.Component {
 }
 
 DrawerMenu.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(DrawerMenu);
