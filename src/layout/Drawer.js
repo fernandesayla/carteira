@@ -2,7 +2,7 @@ import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import { Toolbar } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import logo from '../../assets/images/bancodobrasil.png';
+import logo from '../assets/images/bancodobrasil.png';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Drawer,

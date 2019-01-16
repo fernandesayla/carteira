@@ -4,14 +4,14 @@ import './App.css';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import AppNavbar from './components/layout/AppNavbar';
-import DrawerMenu from './components/layout/Drawer';
+import AppNavbar from './layout/AppNavbar';
+import DrawerMenu from './layout/Drawer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import CadastraCarteira from './components/layout/CadastraCarteira';
-import Home from './components/layout/Home';
-import { FormHelperText } from '@material-ui/core';
+import CadastraCarteira from './layout/CadastraCarteira';
+import Home from './layout/Home';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import Carteira from './layout/Carteira';
 
 const styles = theme => ({
   root: {
@@ -134,6 +134,7 @@ class App extends Component {
                   path="/carteira/cadastrar"
                   component={CadastraCarteira}
                 />
+                <Route exact path="/carteira/lista" component={Carteira} />
               </Switch>
             </main>
           </MuiThemeProvider>

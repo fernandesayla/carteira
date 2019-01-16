@@ -1,7 +1,7 @@
 import React from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import { Toolbar, Typography, Avatar, IconButton } from '@material-ui/core';
-import logo from '../../assets/images/bancodobrasil.png';
+import logo from '../assets/images/bancodobrasil.png';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
