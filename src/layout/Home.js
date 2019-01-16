@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Dashboard from './Dashboard';
 import TableCarteiras from '../components/TableCarteiras';
+
 class Home extends Component {
   constructor() {
     super();

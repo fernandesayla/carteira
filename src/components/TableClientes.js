@@ -46,16 +46,21 @@ function getSorting(order, orderBy) {
 }
 
 const rows = [
-  { id: 'id', disablePadding: true, label: 'Carteira' },
+  { id: 'mci', disablePadding: true, label: 'Grupo/MCI' },
   {
-    id: 'gecex',
+    id: 'nome',
     disablePadding: true,
-    label: 'Gecex'
+    label: 'Nome'
   },
-
-  { id: 'solicitacoes', disablePadding: true, label: 'Solicitações' },
-  { id: 'genin', disablePadding: true, label: 'Genin' },
-  { id: 'qtd_clientes', disablePadding: true, label: 'Qtd  Clientes' }
+  { id: 'segmento', disablePadding: true, label: 'Segmento' },
+  { id: 'prefixo_nome', disablePadding: true, label: 'Agência' },
+  { id: 'cidade', disablePadding: true, label: 'Cidade' },
+  { id: 'bairro', disablePadding: true, label: 'Bairro' },
+  {
+    id: 'dt_encarteiramento',
+    disablePadding: true,
+    label: 'Dt Encarteiramento'
+  }
 ];
 
 class EnhancedTableHead extends React.Component {

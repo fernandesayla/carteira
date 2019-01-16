@@ -1,10 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import { Grid, Card } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import CardIcon from '../components/CardIcon';
 import { DoneAll, Schedule, Phone } from '@material-ui/icons';
+
 const styles = theme => ({
   cardCategory: {
     margin: 0,
@@ -23,7 +24,7 @@ const styles = theme => ({
   }
 });
 
-class Dashboard extends React.Component {
+class Dashboard extends Component {
   render() {
     const { classes, dados } = this.props;
 
