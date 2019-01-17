@@ -15,9 +15,10 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import DeleteIcon from '@material-ui/icons/Delete';
+import TrocaIcon from '@material-ui/icons/SwapHoriz';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import { Redirect } from 'react-router-dom';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -139,7 +140,8 @@ const toolbarStyles = theme => ({
     flex: '1 1 100%'
   },
   actions: {
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
+    display: 'flex'
   },
   title: {
     flex: '0 0 auto'
@@ -147,7 +149,8 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, handleClickDelete } = props;
+  const { numSelected, classes, handleClickCriarSolicitacao, method } = props;
+  console.log(method);
 
   return (
     <Toolbar
@@ -167,11 +170,16 @@ let EnhancedTableToolbar = props => {
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete" onClick={handleClickDelete}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <div className={classes.actions}>
+            <Tooltip title="Solicitar Alteração">
+              <IconButton
+                aria-label="Edit"
+                onClick={handleClickCriarSolicitacao}
+              >
+                <TrocaIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
         ) : (
           <Tooltip title="Filter list">
             <IconButton aria-label="Filter list">
@@ -206,14 +214,13 @@ class EnhancedTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleSelectAllClick = this.handleSelectAllClick.bind(this);
-
     this.state = {
       order: 'asc',
       orderBy: 'id',
       selected: [],
       page: 0,
-      rowsPerPage: 5
+      rowsPerPage: 5,
+      gotoSolicitacao: false
     };
   }
 
@@ -235,9 +242,9 @@ class EnhancedTable extends React.Component {
     }
     this.setState({ selected: [] });
   };
-  handleClickDelete = () => {
-    this.props.deleteItemListbyId(this.state.selected, 'participantes');
-    this.setState({ selected: [] });
+
+  handleClickCriarSolicitacao = () => {
+    this.setState({ gotoSolicitacao: true });
   };
   handleClick = (event, id) => {
     const { selected } = this.state;
@@ -276,12 +283,27 @@ class EnhancedTable extends React.Component {
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    let { gotoSolicitacao } = this.state;
+
+    if (gotoSolicitacao)
+      return (
+        <Redirect
+          to={{
+            pathname: '/carteira/solicitacoes',
+            state: {
+              selected: data.filter(item => {
+                return selected.indexOf(item.id) !== -1;
+              })
+            }
+          }}
+        />
+      );
 
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          handleClickDelete={this.handleClickDelete}
+          handleClickCriarSolicitacao={this.handleClickCriarSolicitacao}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

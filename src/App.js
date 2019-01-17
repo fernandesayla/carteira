@@ -12,6 +12,7 @@ import Home from './layout/Home';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Carteira from './layout/Carteira';
+import Solicitacoes from './layout/Solicitacoes';
 
 const styles = theme => ({
   root: {
@@ -135,6 +136,11 @@ class App extends Component {
                   component={CadastraCarteira}
                 />
                 <Route exact path="/carteira/lista" component={Carteira} />
+                <Route
+                  exact
+                  path="/carteira/solicitacoes"
+                  component={Solicitacoes}
+                />
               </Switch>
             </main>
           </MuiThemeProvider>

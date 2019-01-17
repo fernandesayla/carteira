@@ -18,7 +18,7 @@ class Home extends Component {
           id: 2,
           gecex: 'ff',
           solicitacoes: 8,
-          genin: 'Vermelho',
+          genin: 'Roxo',
           qtd_clientes: '70'
         }
       ]
