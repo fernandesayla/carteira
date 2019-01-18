@@ -150,7 +150,6 @@ const toolbarStyles = theme => ({
 
 let EnhancedTableToolbar = props => {
   const { numSelected, classes, handleClickCriarSolicitacao, method } = props;
-  console.log(method);
 
   return (
     <Toolbar

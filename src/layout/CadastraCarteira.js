@@ -9,7 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
-import { getGecex, getSegmentos, getSituacao, getGeninsPorUor } from './api';
+import { getGecex, getSegmentos, getSituacao, getGeninsPorUor } from '../api';
 const styles = theme => ({
   form: { diplay: 'flex', alignContent: 'space-between' },
   formControl: {
@@ -71,8 +71,6 @@ class CadastraCarteira extends Component {
 
   handleChangeGecex = input => e => {
     this.setState({ [input]: e.target.value });
-
-    console.log(e.target.value);
 
     getGeninsPorUor(e.target.value.uor)
       .then(response => response.json())
