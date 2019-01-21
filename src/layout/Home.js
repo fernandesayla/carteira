@@ -74,8 +74,10 @@ class Home extends Component {
         .then(data => {
           this.setState({ carteirasInicio: data.carteiras });
           this.setState({ carteiras: data.carteiras });
-          if (this.props.user.prefixo != this.props.match.params.prefixo)
+
+          if (!['9958', '9514'].includes(this.props.match.params.prefixo)) {
             this.filterCarteira('gecex', this.props.match.params.prefixo);
+          }
         })
         .catch(function(err) {
           console.error(err);
