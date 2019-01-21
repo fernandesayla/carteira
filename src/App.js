@@ -6,28 +6,38 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import AppNavbar from './layout/AppNavbar';
 import DrawerMenu from './layout/Drawer';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  withRouter
+} from 'react-router-dom';
 import CadastraCarteira from './layout/CadastraCarteira';
 import Home from './layout/Home';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Carteira from './layout/Carteira';
 import Solicitacoes from './layout/Solicitacoes';
-import { autentica } from './api';
+import { isUCE, autentica } from './auth';
+
 const styles = theme => ({
   root: {
     display: 'flex'
   },
   content: {
     flexGrow: 1,
-    paddingTop: 90,
-    padding: theme.spacing.unit * 3
+    [theme.breakpoints.up('lg')]: {
+      padding: theme.spacing.unit * 25,
+      paddingTop: 90
+    },
+    padding: theme.spacing.unit,
+    paddingTop: 90
   },
   drawer: {
-    [theme.breakpoints.up('sm')]: {
+    /* [theme.breakpoints.up('sm')]: {
       width: 240,
       flexShrink: 0
-    }
+    }*/
   }
 });
 
@@ -37,14 +47,40 @@ class App extends Component {
 
     this.state = {
       mobileOpen: false,
-      user: { chave: 'F1522457' },
+      user: {},
       token: '',
       autenticado: ''
     };
   }
 
   componentWillMount() {
-    console.log(autentica());
+    autentica()
+      .then(response => {
+        if (response.status > 350) {
+          this.setState({ autenticado: false });
+          /*   window.location =
+          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';*/
+        }
+
+        if (response.headers.get('x-access-token') != null) {
+          window.sessionStorage.token = response.headers.get('x-access-token');
+        }
+
+        return response.json();
+      })
+      .then(data => {
+        this.setState({ user: data.user[0] });
+
+        this.setState({ autenticado: true });
+      })
+
+      .catch(function(err) {
+        return false;
+        this.setState({ token: '' });
+        this.setState({ autenticado: false });
+        /* window.location =
+          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';*/
+      });
   }
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
@@ -72,13 +108,38 @@ class App extends Component {
             </nav>
             <main className={classes.content}>
               <Switch>
-                <Route exact path="/carteira" component={Home} />
+                {/* <Route
+          render={props =>
+            this.state.autenticado ? (
+              <Header
+                {...props}
+                user={this.state.user}
+                token={this.state.token}
+              />
+            ) : (
+              ''
+            )
+          }
+        />*/}
+                <Route
+                  exact
+                  path="/carteira/:prefixo"
+                  render={props =>
+                    this.state.autenticado ? (
+                      <Home user={user} {...props} />
+                    ) : null
+                  }
+                />
                 <Route
                   exact
                   path="/carteira/cadastrar"
-                  component={CadastraCarteira}
+                  component={isUCE(user) ? CadastraCarteira : null}
                 />
-                <Route exact path="/carteira/lista" component={Carteira} />
+                <Route
+                  exact
+                  path="/carteira/:gecex/:carteira"
+                  component={Carteira}
+                />
                 <Route
                   exact
                   path="/carteira/solicitacoes"

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useReducer } from 'react';
 import {
   MenuItem,
   Select,
@@ -15,6 +15,7 @@ import {
   getSegmentos,
   getSituacao,
   getGeninsPorUor,
+  getCarteirasPorGecex,
   getTodosGenins,
   getTodasCarteiras
 } from '../api';
@@ -40,33 +41,15 @@ class Home extends Component {
       dependencias: [],
 
       carteirasInicio: [],
-      carteiras: [
-        {
-          id: 1,
-          gecex: 1690,
-          solicitacoes: 3,
-          genin: 'F0169948',
-          qtd_clientes: '80'
-        },
-        {
-          id: 2,
-          gecex: 4794,
-          solicitacoes: 8,
-          genin: 'F0169948',
-          qtd_clientes: '70'
-        },
-        {
-          id: 3,
-          gecex: 4794,
-          solicitacoes: 8,
-          genin: 'F0720631',
-          qtd_clientes: '70'
-        }
-      ]
+      carteiras: []
     };
   }
 
   componentWillMount() {
+    if (!this.props.user) return;
+    console.log(this.props);
+    const paramsPrefixo = this.props.match.params.prefixo;
+
     getGecex()
       .then(response => response.json())
       .then(data => {
@@ -87,15 +70,29 @@ class Home extends Component {
         console.error(err);
       });
 
-    getTodasCarteiras()
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ carteirasInicio: data.carteiras });
-        this.setState({ carteiras: data.carteiras });
-      })
-      .catch(function(err) {
-        console.error(err);
-      });
+    if ([9958, 9514].includes(this.props.user.prefixo)) {
+      getTodasCarteiras()
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ carteirasInicio: data.carteiras });
+          this.setState({ carteiras: data.carteiras });
+          if (this.props.user.prefixo != this.props.match.params.prefixo)
+            this.filterCarteira('gecex', this.props.match.params.prefixo);
+        })
+        .catch(function(err) {
+          console.error(err);
+        });
+    } else {
+      getCarteirasPorGecex(this.props.user.prefixo)
+        .then(response => response.json())
+        .then(data => {
+          this.setState({ carteirasInicio: data.carteiras });
+          this.setState({ carteiras: data.carteiras });
+        })
+        .catch(function(err) {
+          console.error(err);
+        });
+    }
   }
   handleChangeGecex = input => e => {
     if (e.target.value.prefixo)
@@ -129,7 +126,7 @@ class Home extends Component {
   filterCarteira = (tipo, key) => {
     const { carteirasInicio, carteiras } = this.state;
     let filtrada = carteirasInicio;
-
+    console.log(tipo, key);
     switch (tipo) {
       case 'gecex':
         filtrada = carteirasInicio.filter(item => item.gecex == key);
@@ -140,6 +137,8 @@ class Home extends Component {
       default:
         filtrada = carteirasInicio;
     }
+
+    console.log(filtrada);
 
     this.setState({ carteiras: filtrada });
   };
@@ -194,7 +193,9 @@ class Home extends Component {
           </FormControl>
         </Paper>
         <Dashboard dados={'dados'} />
-        {carteiras.length > 0 ? <TableCarteiras data={carteiras} /> : null}
+        {carteiras || carteiras.length > 0 ? (
+          <TableCarteiras data={carteiras} />
+        ) : null}
       </div>
     );
   }

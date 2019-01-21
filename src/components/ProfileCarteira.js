@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Avatar, Paper } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import moment from 'moment';
 
 const styles = {
   cardProfileCarteira: {
@@ -52,13 +53,15 @@ const ProfileCarteira = props => {
   return (
     <Paper>
       <div className={classes.cardHeader}>
-        <Avatar
-          className={classes.bigAvatar}
-          alt={carteira.chave}
-          src={
-            'https://humanograma.intranet.bb.com.br/avatar/' + carteira.chave
-          }
-        />
+        {carteira.genin ? (
+          <Avatar
+            className={classes.bigAvatar}
+            alt={carteira.chave}
+            src={
+              'https://humanograma.intranet.bb.com.br/avatar/' + carteira.chave
+            }
+          />
+        ) : null}
       </div>
 
       <div className={classes.cardContent}>
@@ -66,26 +69,26 @@ const ProfileCarteira = props => {
           <div className={classes.groupInformation}>
             <Typography className={classes.cardLabel}>Gecex</Typography>
             <Typography className={classes.cardInformation}>
-              {carteira.gecex}
+              {`${carteira.gecex} - ${carteira.nome_reduzido}`}
             </Typography>
           </div>
           <div className={classes.groupInformation}>
             <Typography className={classes.cardLabel}>Carteira</Typography>
             <Typography className={classes.cardInformation}>
-              {carteira.id}
+              {carteira.carteira}
             </Typography>
           </div>
           <div className={classes.groupInformation}>
             <Typography className={classes.cardLabel}>Genin</Typography>
             <Typography className={classes.cardInformation}>
-              {carteira.genin}
+              {carteira.genin || 'Sem Genin atribuído'}
             </Typography>
           </div>
 
           <div className={classes.groupInformation}>
             <Typography className={classes.cardLabel}>Data Criação</Typography>
             <Typography className={classes.cardInformation}>
-              {carteira.dt_create}
+              {moment(carteira.dt_create).format('DD/MM/YYYY')}
             </Typography>
           </div>
         </div>
@@ -95,7 +98,14 @@ const ProfileCarteira = props => {
             <Typography className={classes.cardLabel}>Segmento</Typography>
 
             <Typography className={classes.cardInformation}>
-              {carteira.segmento}
+              {carteira.descricao_segmento || 'Sem segmento'}
+            </Typography>
+          </div>
+          <div className={classes.groupInformation}>
+            <Typography className={classes.cardLabel}>Situação</Typography>
+
+            <Typography className={classes.cardInformation}>
+              {carteira.descricao_situacao || 'Sem situação'}
             </Typography>
           </div>
 
@@ -105,7 +115,7 @@ const ProfileCarteira = props => {
             </Typography>
 
             <Typography className={classes.cardInformation}>
-              {carteira.dt_create}
+              {carteira.qtd_clientes || 0}
             </Typography>
           </div>
           <div className={classes.groupInformation}>
@@ -114,14 +124,14 @@ const ProfileCarteira = props => {
             </Typography>
 
             <Typography className={classes.cardInformation}>
-              {carteira.clientes_novos_30}
+              {carteira.clientes_novos_30 || 0}
             </Typography>
           </div>
           <div className={classes.groupInformation}>
             <Typography className={classes.cardLabel}>Informativo</Typography>
 
             <Typography className={classes.cardInformation}>
-              {carteira.calc_infor}
+              {carteira.calc_infor || 0}
             </Typography>
           </div>
         </div>

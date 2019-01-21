@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -153,10 +154,6 @@ class EnhancedTable extends React.Component {
     this.setState({ order, orderBy });
   };
 
-  handleClick = (event, selected) => {
-    this.setState({ selected: selected });
-  };
-
   handleChangePage = (event, page) => {
     this.setState({ page });
   };
@@ -168,7 +165,7 @@ class EnhancedTable extends React.Component {
   render() {
     const { data, classes } = this.props;
 
-    const { order, orderBy, rowsPerPage, page, selected } = this.state;
+    const { order, orderBy, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
@@ -179,7 +176,6 @@ class EnhancedTable extends React.Component {
             <EnhancedTableHead
               order={order}
               orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={data.length}
             />
@@ -190,10 +186,14 @@ class EnhancedTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n)}
                       role="checkbox"
                       tabIndex={-1}
                       key={n.index}
+                      component={Link}
+                      to={{
+                        pathname: `/carteira/${n.gecex}/${n.carteira}`,
+                        state: { carteira: n }
+                      }}
                     >
                       <TableCell component="th" scope="row" padding="none">
                         {n.carteira}
@@ -201,15 +201,10 @@ class EnhancedTable extends React.Component {
                       <TableCell>{n.gecex}</TableCell>
 
                       <TableCell>{n.genin}</TableCell>
-                      <TableCell>{n.segmento}</TableCell>
-                      <TableCell>{n.situacao}</TableCell>
+                      <TableCell>{n.descricao_segmento}</TableCell>
+                      <TableCell>{n.descricao_situacao}</TableCell>
                       <TableCell>{n.qtd_clientes}</TableCell>
                       <TableCell>{moment(n.dt_create).format('LL')}</TableCell>
-                      <TableCell>
-                        <Link to="/carteira/lista" carteira={selected}>
-                          x
-                        </Link>
-                      </TableCell>
                     </TableRow>
                   );
                 })}

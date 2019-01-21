@@ -72,7 +72,7 @@ class DrawerMenu extends React.Component {
             {drawer}
           </Drawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        {/*<Hidden xsDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper
@@ -87,7 +87,7 @@ class DrawerMenu extends React.Component {
             </AppBar>
             {drawer}
           </Drawer>
-        </Hidden>
+          </Hidden>*/}
       </div>
     );
   }

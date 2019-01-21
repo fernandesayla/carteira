@@ -60,8 +60,6 @@ class CadastraCarteira extends Component {
     getSituacao()
       .then(response => response.json())
       .then(data => {
-        console.log(data.situacoes[0]);
-
         this.setState({ situacoes: data.situacoes });
       })
       .catch(function(err) {
