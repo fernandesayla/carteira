@@ -203,9 +203,14 @@ class Home extends Component {
               ))}
             </Select>
           </FormControl>
-          <Button onClick={this.aplicarFiltro}>Aplicar Filtros</Button>
         </Paper>
-        <Dashboard dados={'dados'} />
+        <Dashboard
+          dados={{
+            gecex: dependencias.length,
+            carteiras: carteiras.length,
+            clientes: carteiras.reduce((a, b) => a + b.qtd_clientes, 0)
+          }}
+        />
         {carteiras || carteiras.length > 0 ? (
           <TableCarteiras data={carteiras} />
         ) : null}

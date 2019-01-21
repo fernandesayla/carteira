@@ -50,6 +50,8 @@ const styles = {
 
 const ProfileCarteira = props => {
   const { carteira, classes } = props;
+  console.log(carteira);
+
   return (
     <Paper>
       <div className={classes.cardHeader}>
@@ -91,6 +93,13 @@ const ProfileCarteira = props => {
               {moment(carteira.dt_create).format('DD/MM/YYYY')}
             </Typography>
           </div>
+          <div className={classes.groupInformation}>
+            <Typography className={classes.cardLabel}>Situação</Typography>
+
+            <Typography className={classes.cardInformation}>
+              {carteira.descricao_situacao || 'Sem situação'}
+            </Typography>
+          </div>
         </div>
 
         <div className={classes.parentGroupInformation}>
@@ -99,13 +108,6 @@ const ProfileCarteira = props => {
 
             <Typography className={classes.cardInformation}>
               {carteira.descricao_segmento || 'Sem segmento'}
-            </Typography>
-          </div>
-          <div className={classes.groupInformation}>
-            <Typography className={classes.cardLabel}>Situação</Typography>
-
-            <Typography className={classes.cardInformation}>
-              {carteira.descricao_situacao || 'Sem situação'}
             </Typography>
           </div>
 

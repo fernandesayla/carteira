@@ -37,7 +37,10 @@ class DrawerMenu extends React.Component {
     const drawer = (
       <div>
         <List>
-          <Link to={`/carteira/${user.prefixo}`} className="nav-link">
+          <Link
+            to={`/carteira/${user.prefixo}`}
+            style={{ textDecoration: 'none' }}
+          >
             <ListItem button>
               <ListItemText primary="Home" />
             </ListItem>

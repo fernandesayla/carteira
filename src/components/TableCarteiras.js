@@ -41,11 +41,15 @@ function getSorting(order, orderBy) {
     : (a, b) => -desc(a, b, orderBy);
 }
 const rows = [
-  { id: 'carteira', disablePadding: true, label: 'Carteira' },
+  { id: 'carteira', disablePadding: true, numeric: true, label: 'Carteira' },
   { id: 'gecex', disablePadding: true, label: 'Gecex' },
-  { id: 'solicitacoes', disablePadding: true, label: 'Solicitações' },
-  { id: 'segmento', disablePadding: true, label: 'Segmento' },
+  { id: 'nome_reduzido', disablePadding: true, label: 'Nome Gecex' },
+
   { id: 'genin', disablePadding: true, label: 'Genin' },
+  { id: 'nome_genin', disablePadding: true, label: 'Nome Genin' },
+
+  { id: 'descricao_segmento', disablePadding: true, label: 'Segmento' },
+  { id: 'descricao_situacao', disablePadding: true, label: 'Situação' },
   { id: 'qtd_clientes', disablePadding: true, label: 'Qtd  Clientes' },
   { id: 'dt_create', disablePadding: true, label: 'Data Criação' }
 ];
@@ -58,14 +62,19 @@ class EnhancedTableHead extends React.Component {
   render() {
     const { order, orderBy } = this.props;
 
+    const header = {
+      padding: '0px 0px 0px 8px'
+    };
     return (
       <TableHead>
         <TableRow>
           {rows.map((row, index) => {
             return (
               <TableCell
+                alignCenter
                 key={index}
                 padding={row.disablePadding ? 'none' : 'default'}
+                style={header}
                 sortDirection={orderBy === row.gecex ? order : false}
               >
                 <Tooltip title="Sort" placement="bottom-start" enterDelay={300}>
@@ -102,6 +111,10 @@ const styles = theme => ({
 
   tableWrapper: {
     overflowX: 'auto'
+  },
+  cell: {
+    padding: '0px 0px 0px 8px',
+    textDecoration: 'none'
   }
 });
 
@@ -164,22 +177,42 @@ class EnhancedTable extends React.Component {
                       role="checkbox"
                       tabIndex={-1}
                       key={n.index}
+                      style={{ textDecoration: 'none' }}
                       component={Link}
                       to={{
                         pathname: `/carteira/${n.gecex}/${n.carteira}`,
                         state: { carteira: n }
                       }}
                     >
-                      <TableCell component="th" scope="row" padding="none">
+                      <TableCell paddingNone className={classes.cell}>
                         {n.carteira}
                       </TableCell>
-                      <TableCell>{n.gecex}</TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.gecex}
+                      </TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.nome_reduzido}
+                      </TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.genin}
+                      </TableCell>
 
-                      <TableCell>{n.genin}</TableCell>
-                      <TableCell>{n.descricao_segmento}</TableCell>
-                      <TableCell>{n.descricao_situacao}</TableCell>
-                      <TableCell>{n.qtd_clientes}</TableCell>
-                      <TableCell>{moment(n.dt_create).format('LL')}</TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.nome_genin}
+                      </TableCell>
+
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.descricao_segmento}
+                      </TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.descricao_situacao}
+                      </TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {n.qtd_clientes}
+                      </TableCell>
+                      <TableCell paddingNone className={classes.cell}>
+                        {moment(n.dt_create).format('LL')}
+                      </TableCell>
                     </TableRow>
                   );
                 })}

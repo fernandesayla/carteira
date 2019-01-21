@@ -39,7 +39,7 @@ class Dashboard extends Component {
                   Total de Gecex
                 </Typography>
                 <Typography variant="h4" className={classes.cardTitle}>
-                  {dados.Visitas_Pendentes}
+                  {dados.gecex}
                 </Typography>
               </Card>
             </div>
@@ -53,7 +53,7 @@ class Dashboard extends Component {
                   Total de Carteiras
                 </Typography>
                 <Typography variant="h4" className={classes.cardTitle}>
-                  {dados.Visitas_Concluidas}
+                  {dados.carteiras}
                 </Typography>
               </Card>
             </div>
@@ -68,7 +68,7 @@ class Dashboard extends Component {
                   Total de Clientes
                 </Typography>
                 <Typography variant="h4" className={classes.cardTitle}>
-                  {dados.ligacoes}
+                  {dados.clientes}
                 </Typography>
               </Card>
             </div>
