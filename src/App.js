@@ -6,12 +6,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import AppNavbar from './layout/AppNavbar';
 import DrawerMenu from './layout/Drawer';
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  withRouter
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CadastraCarteira from './layout/CadastraCarteira';
 import Home from './layout/Home';
 import PropTypes from 'prop-types';
@@ -32,12 +27,6 @@ const styles = theme => ({
     },
     padding: theme.spacing.unit,
     paddingTop: 90
-  },
-  drawer: {
-    /* [theme.breakpoints.up('sm')]: {
-      width: 240,
-      flexShrink: 0
-    }*/
   }
 });
 
@@ -76,8 +65,6 @@ class App extends Component {
 
       .catch(function(err) {
         return false;
-        this.setState({ token: '' });
-        this.setState({ autenticado: false });
         /* window.location =
           'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';*/
       });
@@ -92,14 +79,14 @@ class App extends Component {
 
     return (
       <div className={classes.root}>
-        <Router>
+        <Router initialEntries={[`/carteira`]} initialIndex={0}>
           <MuiThemeProvider theme={theme}>
             <AppNavbar
               handleDrawerToggle={this.handleDrawerToggle}
               user={user}
               mobileOpen={mobileOpen}
             />
-            <nav className={classes.drawer}>
+            <nav>
               <DrawerMenu
                 handleDrawerToggle={this.handleDrawerToggle}
                 user={user}
@@ -108,19 +95,6 @@ class App extends Component {
             </nav>
             <main className={classes.content}>
               <Switch>
-                {/* <Route
-          render={props =>
-            this.state.autenticado ? (
-              <Header
-                {...props}
-                user={this.state.user}
-                token={this.state.token}
-              />
-            ) : (
-              ''
-            )
-          }
-        />*/}
                 <Route
                   exact
                   path="/carteira/:prefixo"

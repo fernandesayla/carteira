@@ -1,24 +1,23 @@
-import React, { Component, useReducer } from 'react';
+import React, { Component } from 'react';
 import {
   MenuItem,
   Select,
   InputLabel,
   FormControl,
   Paper,
-  Typography
+  Typography,
+  Button
 } from '@material-ui/core';
 import Dashboard from './Dashboard';
 
 import TableCarteiras from '../components/TableCarteiras';
 import {
   getGecex,
-  getSegmentos,
-  getSituacao,
-  getGeninsPorUor,
   getCarteirasPorGecex,
   getTodosGenins,
   getTodasCarteiras
 } from '../api';
+import { isUCE } from '../auth';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -48,7 +47,6 @@ class Home extends Component {
   componentWillMount() {
     if (!this.props.user) return;
     console.log(this.props);
-    const paramsPrefixo = this.props.match.params.prefixo;
 
     getGecex()
       .then(response => response.json())
@@ -95,14 +93,17 @@ class Home extends Component {
     }
   }
   handleChangeGecex = input => e => {
-    if (e.target.value.prefixo)
-      this.filterCarteira(input, e.target.value.prefixo);
-    else this.filterCarteira('todos', e.target.value.prefixo);
+    if (e.target.value.prefixo) {
+      this.props.history.push(`/carteira/${e.target.value.prefixo}`);
+      this.filterCarteira(input, this.props.match.params.prefixo);
+    } else {
+      this.filterCarteira('todos', e.target.value.prefixo);
+      this.props.history.push(`/carteira/9958`);
+    }
     this.setState({ genin: 'todas' });
     this.setState({ [input]: e.target.value });
     if (e.target.value == 'todas') {
       this.setState({ genins: this.state.geninsInicio });
-
       return;
     }
 
@@ -111,9 +112,21 @@ class Home extends Component {
 
   handleChangeGenin = input => e => {
     //  if ((input, e.target.value.chave))
+
     this.filterCarteira(input, e.target.value.chave);
 
     this.setState({ [input]: e.target.value });
+  };
+
+  aplicarFiltro = e => {
+    e.preventDefault();
+    const { gecex, carteira, segmento, carteirasInicio } = this.state;
+
+    console.log(gecex, carteira, segmento, carteirasInicio);
+
+    const filtrada = carteirasInicio.filter(item => item.gecex == gecex);
+
+    console.log(filtrada);
   };
 
   filtraGenin = prefixo => {
@@ -124,9 +137,9 @@ class Home extends Component {
   };
 
   filterCarteira = (tipo, key) => {
-    const { carteirasInicio, carteiras } = this.state;
+    const { carteirasInicio } = this.state;
     let filtrada = carteirasInicio;
-    console.log(tipo, key);
+
     switch (tipo) {
       case 'gecex':
         filtrada = carteirasInicio.filter(item => item.gecex == key);
@@ -138,39 +151,38 @@ class Home extends Component {
         filtrada = carteirasInicio;
     }
 
-    console.log(filtrada);
-
     this.setState({ carteiras: filtrada });
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { carteiras, gecex, dependencias, genin, genins } = this.state;
     return (
       <div>
         <Paper className={classes.filters}>
           <Typography variant="h6">Filtros</Typography>
-          <FormControl fullWidth className={classes.formControl}>
-            <InputLabel htmlFor="gecex-simple" shrink={true}>
-              Gecex
-            </InputLabel>
-            <Select
-              value={gecex}
-              onChange={this.handleChangeGecex('gecex')}
-              inputProps={{
-                name: 'gecex',
-                id: 'gecex-simple'
-              }}
-            >
-              <MenuItem value={'todas'}>Todas as Gecex</MenuItem>
-              {dependencias.map(dep => (
-                <MenuItem key={dep.prefixo} value={dep}>
-                  {dep.prefixo + ' - ' + dep.nome_reduzido}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
+          {isUCE(user) ? (
+            <FormControl fullWidth className={classes.formControl}>
+              <InputLabel htmlFor="gecex-simple" shrink={true}>
+                Gecex
+              </InputLabel>
+              <Select
+                value={gecex}
+                onChange={this.handleChangeGecex('gecex')}
+                inputProps={{
+                  name: 'gecex',
+                  id: 'gecex-simple'
+                }}
+              >
+                <MenuItem value={'todas'}>Todas as Gecex</MenuItem>
+                {dependencias.map(dep => (
+                  <MenuItem key={dep.prefixo} value={dep}>
+                    {dep.prefixo + ' - ' + dep.nome_reduzido}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ) : null}
           <FormControl fullWidth className={classes.formControl}>
             <InputLabel htmlFor="genin-simple" shrink={true}>
               Genin
@@ -191,6 +203,7 @@ class Home extends Component {
               ))}
             </Select>
           </FormControl>
+          <Button onClick={this.aplicarFiltro}>Aplicar Filtros</Button>
         </Paper>
         <Dashboard dados={'dados'} />
         {carteiras || carteiras.length > 0 ? (

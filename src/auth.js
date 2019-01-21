@@ -1,5 +1,5 @@
 export const isUCE = user => {
-  return user.prefixo == 9958;
+  return [9958, 9514].includes(user.prefixo);
 };
 
 function getCookie(cname) {

@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import TableClientes from '../components/TableClientes';
 import ProfileCarteira from '../components/ProfileCarteira';
 import { getClientes, getCarteira } from '../api';
-import { Paper, Typography } from '@material-ui/core';
+
 import EmptyTable from '../components/EmptyTable';
 const styles = { emptyTable: { padding: 36, marginTop: 16 } };
 
@@ -15,8 +15,6 @@ class Carteira extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props);
-
     if (this.props.match.params.gecex && this.props.match.params.carteira) {
       getCarteira(
         this.props.match.params.gecex,
@@ -36,7 +34,7 @@ class Carteira extends Component {
       )
         .then(response => response.json())
         .then(data => {
-          this.setState({ clientes: data.clientes[0] });
+          this.setState({ clientes: data.clientes });
         })
         .catch(function(err) {
           console.error(err);

@@ -54,18 +54,15 @@ export const getGecexPorGecex = gecex => {
   );
 };
 
-export const getGecex = gecex => {
-  return fetch(
-    `https://uce.intranet.bb.com.br/api-uce/v1/dependencias/genin/${gecex}`,
-    {
-      method: 'GET',
-      headers: {
-        'x-access-token': window.sessionStorage.token,
-        Accept: 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      }
+export const getGecex = () => {
+  return fetch(`https://uce.intranet.bb.com.br/api-uce/v1/dependencias/genin`, {
+    method: 'GET',
+    headers: {
+      'x-access-token': window.sessionStorage.token,
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
     }
-  );
+  });
 };
 
 export const getTodasCarteiras = () => {

@@ -46,7 +46,6 @@ class Solicitacoes extends Component {
   render() {
     const { classes } = this.props;
     const { carteiras, clientes } = this.state;
-    const { selected } = this.props.location.state;
 
     return (
       <div>

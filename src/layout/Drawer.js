@@ -32,19 +32,14 @@ const styles = theme => ({
 
 class DrawerMenu extends React.Component {
   render() {
-    const { classes, mobileOpen, handleDrawerToggle } = this.props;
+    const { classes, mobileOpen, handleDrawerToggle, user } = this.props;
 
     const drawer = (
       <div>
         <List>
-          <Link to="/carteira" className="nav-link">
+          <Link to={`/carteira/${user.prefixo}`} className="nav-link">
             <ListItem button>
               <ListItemText primary="Home" />
-            </ListItem>
-          </Link>
-          <Link to="/carteira/cadastrar" className="nav-link">
-            <ListItem button>
-              <ListItemText primary="Cadastrar" />
             </ListItem>
           </Link>
         </List>
