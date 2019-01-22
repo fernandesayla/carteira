@@ -97,7 +97,7 @@ class Home extends Component {
   handleChangeGecex = input => e => {
     if (e.target.value.prefixo) {
       this.props.history.push(`/carteira/${e.target.value.prefixo}`);
-      this.filterCarteira(input, this.props.match.params.prefixo);
+      this.filterCarteira(input, e.target.value.prefixo);
     } else {
       this.filterCarteira('todos', e.target.value.prefixo);
       this.props.history.push(`/carteira/9958`);
@@ -114,9 +114,11 @@ class Home extends Component {
 
   handleChangeGenin = input => e => {
     //  if ((input, e.target.value.chave))
-
-    this.filterCarteira(input, e.target.value.chave);
-
+    if (e.target.value.chave) {
+      this.filterCarteira(input, e.target.value.chave);
+    } else {
+      this.filterCarteira('gecex', this.state.gecex.prefixo);
+    }
     this.setState({ [input]: e.target.value });
   };
 
@@ -124,11 +126,7 @@ class Home extends Component {
     e.preventDefault();
     const { gecex, carteira, segmento, carteirasInicio } = this.state;
 
-    console.log(gecex, carteira, segmento, carteirasInicio);
-
     const filtrada = carteirasInicio.filter(item => item.gecex == gecex);
-
-    console.log(filtrada);
   };
 
   filtraGenin = prefixo => {
@@ -152,6 +150,9 @@ class Home extends Component {
       default:
         filtrada = carteirasInicio;
     }
+
+    console.log(tipo, key);
+    console.log(filtrada);
 
     this.setState({ carteiras: filtrada });
   };

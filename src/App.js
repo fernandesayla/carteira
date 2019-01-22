@@ -6,7 +6,12 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import AppNavbar from './layout/AppNavbar';
 import DrawerMenu from './layout/Drawer';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from 'react-router-dom';
 import CadastraCarteira from './layout/CadastraCarteira';
 import Home from './layout/Home';
 import PropTypes from 'prop-types';
@@ -95,6 +100,15 @@ class App extends Component {
             </nav>
             <main className={classes.content}>
               <Switch>
+                <Route
+                  exact
+                  path="/carteira/"
+                  render={() =>
+                    user.prefixo ? (
+                      <Redirect to={`/carteira/${user.prefixo}`} />
+                    ) : null
+                  }
+                />
                 <Route
                   exact
                   path="/carteira/:prefixo"
