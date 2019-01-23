@@ -17,9 +17,9 @@ import {
   getTodasCarteiras
 } from '../api';
 import { isUCE } from '../auth';
-import { withStyles } from '@material-ui/core/styles';
+
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+
 const styles = theme => ({
   form: { diplay: 'flex', alignContent: 'space-between' },
   formControl: {
@@ -96,11 +96,11 @@ class Carteiras extends Component {
   }
   handleChangeGecex = input => e => {
     if (e.target.value.prefixo) {
-      this.props.history.push(`/carteira/${e.target.value.prefixo}`);
+      this.props.history.push(`${this.props.path}${e.target.value.prefixo}`);
       this.filterCarteira(input, e.target.value.prefixo);
     } else {
       this.filterCarteira('todos', e.target.value.prefixo);
-      this.props.history.push(`/carteira/9958`);
+      this.props.history.push(`${this.props.path}/9958`);
     }
     this.setState({ genin: 'todas' });
     this.setState({ [input]: e.target.value });
@@ -148,7 +148,7 @@ class Carteiras extends Component {
   };
 
   render() {
-    const { classes, user } = this.props;
+    const { classes, user, path } = this.props;
     const { carteiras, gecex, dependencias, genin, genins } = this.state;
     return (
       <div>
@@ -205,11 +205,14 @@ class Carteiras extends Component {
           }}
         />
         {carteiras || carteiras.length > 0 ? (
-          <TableCarteiras data={carteiras} />
+          <TableCarteiras data={carteiras} path={path} />
         ) : null}
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Carteiras);
+const mapStateToProps = state => ({
+  carteiras: state.carteira.carteiras
+});
+export default connect(mapStateToProps)(Carteiras);
