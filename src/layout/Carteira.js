@@ -3,49 +3,26 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TableClientes from '../components/TableClientes';
 import ProfileCarteira from '../components/ProfileCarteira';
-import { getClientes, getCarteira } from '../api';
+import { getClientes } from '../actions/clientesActions';
+import { getCarteira } from '../actions/carteiraActions';
+import { connect } from 'react-redux';
 
 import EmptyTable from '../components/EmptyTable';
 const styles = { emptyTable: { padding: 36, marginTop: 16 } };
 
 class Carteira extends Component {
-  state = {
-    clientes: [],
-    carteira: {}
-  };
-
   componentDidMount() {
-    if (this.props.match.params.gecex && this.props.match.params.carteira) {
-      getCarteira(
-        this.props.match.params.gecex,
-        this.props.match.params.carteira
-      )
-        .then(response => response.json())
-        .then(data => {
-          this.setState({ carteira: data.carteira[0] });
-        })
-        .catch(function(err) {
-          console.error(err);
-        });
+    const { gecex, carteira } = this.props.match.params;
 
-      getClientes(
-        this.props.match.params.gecex,
-        this.props.match.params.carteira
-      )
-        .then(response => response.json())
-        .then(data => {
-          this.setState({ clientes: data.clientes });
-        })
-        .catch(function(err) {
-          console.error(err);
-        });
+    if (gecex && carteira) {
+      this.props.getCarteira(gecex, carteira);
+      this.props.getClientes(gecex, carteira);
     }
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, carteira, clientes } = this.props;
 
-    const { clientes, carteira } = this.state;
     return (
       <div>
         {carteira ? (
@@ -63,7 +40,15 @@ class Carteira extends Component {
 }
 
 Carteira.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  getCarteira: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Carteira);
+const mapStateToProps = state => ({
+  carteira: state.carteira.carteira,
+  clientes: state.clientes.clientes
+});
+export default connect(
+  mapStateToProps,
+  { getCarteira, getClientes }
+)(withStyles(styles)(Carteira));

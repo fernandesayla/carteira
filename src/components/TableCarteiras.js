@@ -151,7 +151,7 @@ class EnhancedTable extends React.Component {
   };
 
   render() {
-    const { data, classes } = this.props;
+    const { data, classes, path } = this.props;
 
     const { order, orderBy, rowsPerPage, page } = this.state;
     const emptyRows =
@@ -180,7 +180,7 @@ class EnhancedTable extends React.Component {
                       style={{ textDecoration: 'none' }}
                       component={Link}
                       to={{
-                        pathname: `/carteira/${n.gecex}/${n.carteira}`,
+                        pathname: `${path}/${n.gecex}/${n.carteira}`,
                         state: { carteira: n }
                       }}
                     >

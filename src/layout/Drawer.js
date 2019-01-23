@@ -32,13 +32,13 @@ const styles = theme => ({
 
 class DrawerMenu extends React.Component {
   render() {
-    const { classes, mobileOpen, handleDrawerToggle, user } = this.props;
+    const { classes, mobileOpen, handleDrawerToggle, user, path } = this.props;
 
     const drawer = (
       <div>
         <List>
           <Link
-            to={`/carteira/${user.prefixo}`}
+            to={`${path}/${user.prefixo}`}
             style={{ textDecoration: 'none' }}
           >
             <ListItem button>

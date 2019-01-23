@@ -8,7 +8,7 @@ import {
   Typography
 } from '@material-ui/core';
 import Dashboard from './Dashboard';
-
+import { withStyles } from '@material-ui/core/styles';
 import TableCarteiras from '../components/TableCarteiras';
 import {
   getGecex,
@@ -17,7 +17,7 @@ import {
   getTodasCarteiras
 } from '../api';
 import { isUCE } from '../auth';
-
+import { getCarteiras } from '../actions/carteiraActions';
 import { connect } from 'react-redux';
 
 const styles = theme => ({
@@ -44,9 +44,11 @@ class Carteiras extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getCarteiras();
+  }
   componentWillMount() {
     if (!this.props.user) return;
-    console.log(this.props);
 
     getGecex()
       .then(response => response.json())
@@ -96,7 +98,7 @@ class Carteiras extends Component {
   }
   handleChangeGecex = input => e => {
     if (e.target.value.prefixo) {
-      this.props.history.push(`${this.props.path}${e.target.value.prefixo}`);
+      this.props.history.push(`${this.props.path}/${e.target.value.prefixo}`);
       this.filterCarteira(input, e.target.value.prefixo);
     } else {
       this.filterCarteira('todos', e.target.value.prefixo);
@@ -148,8 +150,8 @@ class Carteiras extends Component {
   };
 
   render() {
-    const { classes, user, path } = this.props;
-    const { carteiras, gecex, dependencias, genin, genins } = this.state;
+    const { classes, user, path, carteiras } = this.props;
+    const { gecex, dependencias, genin, genins } = this.state;
     return (
       <div>
         <Paper className={classes.filters}>
@@ -197,13 +199,15 @@ class Carteiras extends Component {
             </Select>
           </FormControl>
         </Paper>
-        <Dashboard
-          dados={{
-            gecex: dependencias.length,
-            carteiras: carteiras.length,
-            clientes: carteiras.reduce((a, b) => a + b.qtd_clientes, 0)
-          }}
-        />
+        {carteiras ? (
+          <Dashboard
+            dados={{
+              gecex: dependencias.length,
+              carteiras: carteiras.length,
+              clientes: carteiras.reduce((a, b) => a + b.qtd_clientes, 0)
+            }}
+          />
+        ) : null}
         {carteiras || carteiras.length > 0 ? (
           <TableCarteiras data={carteiras} path={path} />
         ) : null}
@@ -215,4 +219,7 @@ class Carteiras extends Component {
 const mapStateToProps = state => ({
   carteiras: state.carteira.carteiras
 });
-export default connect(mapStateToProps)(Carteiras);
+export default connect(
+  mapStateToProps,
+  { getCarteiras }
+)(withStyles(styles)(Carteiras));
