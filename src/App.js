@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-
 import './App.css';
-
+import { Provider } from 'react-redux';
+import store from './store';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
 import AppNavbar from './layout/AppNavbar';
 import DrawerMenu from './layout/Drawer';
 import {
@@ -13,11 +12,13 @@ import {
   Redirect
 } from 'react-router-dom';
 import CadastraCarteira from './layout/CadastraCarteira';
-import Home from './layout/Home';
+import Carteiras from './layout/Carteiras';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Carteira from './layout/Carteira';
 import Solicitacoes from './layout/Solicitacoes';
+import Validacoes from './layout/Validacoes';
+
 import { isUCE, autentica } from './auth';
 
 const styles = theme => ({
@@ -83,61 +84,65 @@ class App extends Component {
     const { user, mobileOpen } = this.state;
 
     return (
-      <div className={classes.root}>
+      <Provider store={store}>
         <Router initialEntries={[`/carteira`]} initialIndex={0}>
           <MuiThemeProvider theme={theme}>
-            <AppNavbar
-              handleDrawerToggle={this.handleDrawerToggle}
-              user={user}
-              mobileOpen={mobileOpen}
-            />
-            <nav>
-              <DrawerMenu
+            <div className={classes.root}>
+              <AppNavbar
                 handleDrawerToggle={this.handleDrawerToggle}
                 user={user}
                 mobileOpen={mobileOpen}
               />
-            </nav>
-            <main className={classes.content}>
-              <Switch>
-                <Route
-                  exact
-                  path="/carteira/"
-                  render={() =>
-                    user.prefixo ? (
-                      <Redirect to={`/carteira/${user.prefixo}`} />
-                    ) : null
-                  }
+              <nav>
+                <DrawerMenu
+                  handleDrawerToggle={this.handleDrawerToggle}
+                  user={user}
+                  mobileOpen={mobileOpen}
                 />
-                <Route
-                  exact
-                  path="/carteira/:prefixo"
-                  render={props =>
-                    this.state.autenticado ? (
-                      <Home user={user} {...props} />
-                    ) : null
-                  }
-                />
-                <Route
-                  exact
-                  path="/carteira/cadastrar"
-                  component={isUCE(user) ? CadastraCarteira : null}
-                />
-                <Route
-                  exact
-                  path="/carteira/:gecex/:carteira"
-                  component={Carteira}
-                />
-                <Route
-                  exact
-                  path="/carteira/solicitacoes"
-                  component={Solicitacoes}
-                />
-              </Switch>
-            </main>
+              </nav>
+              <main className={classes.content}>
+                <Switch>
+                  <Route
+                    exact
+                    path="/carteira/"
+                    render={() =>
+                      user.prefixo ? (
+                        <Redirect to={`/carteira/${user.prefixo}`} />
+                      ) : null
+                    }
+                  />
+                  <Route
+                    path="/carteira/:prefixo"
+                    render={props =>
+                      this.state.autenticado ? (
+                        <Carteiras user={user} {...props} />
+                      ) : null
+                    }
+                  />
+                  <Route
+                    path="/carteira/cadastrar"
+                    component={isUCE(user) ? CadastraCarteira : null}
+                  />
+                  <Route
+                    path="/carteira/:gecex/:carteira"
+                    component={Carteira}
+                  />
+                  <Route
+                    path="/carteira/solicitacoes"
+                    component={Solicitacoes}
+                  />
+
+                  <Route
+                    exact
+                    path="/carteira/validacoes"
+                    component={Validacoes}
+                  />
+                </Switch>
+              </main>
+            </div>
           </MuiThemeProvider>
         </Router>
-      </div>
+      </Provider>
     );
   }
 }

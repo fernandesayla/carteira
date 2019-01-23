@@ -5,8 +5,7 @@ import {
   InputLabel,
   FormControl,
   Paper,
-  Typography,
-  Button
+  Typography
 } from '@material-ui/core';
 import Dashboard from './Dashboard';
 
@@ -19,7 +18,8 @@ import {
 } from '../api';
 import { isUCE } from '../auth';
 import { withStyles } from '@material-ui/core/styles';
-
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 const styles = theme => ({
   form: { diplay: 'flex', alignContent: 'space-between' },
   formControl: {
@@ -29,7 +29,7 @@ const styles = theme => ({
   filters: { padding: 16 }
 });
 
-class Home extends Component {
+class Carteiras extends Component {
   constructor() {
     super();
     this.state = {
@@ -122,13 +122,6 @@ class Home extends Component {
     this.setState({ [input]: e.target.value });
   };
 
-  aplicarFiltro = e => {
-    e.preventDefault();
-    const { gecex, carteira, segmento, carteirasInicio } = this.state;
-
-    const filtrada = carteirasInicio.filter(item => item.gecex == gecex);
-  };
-
   filtraGenin = prefixo => {
     const { geninsInicio } = this.state;
     let filtrada = geninsInicio;
@@ -150,9 +143,6 @@ class Home extends Component {
       default:
         filtrada = carteirasInicio;
     }
-
-    console.log(tipo, key);
-    console.log(filtrada);
 
     this.setState({ carteiras: filtrada });
   };
@@ -222,4 +212,4 @@ class Home extends Component {
   }
 }
 
-export default withStyles(styles)(Home);
+export default withStyles(styles)(Carteiras);
