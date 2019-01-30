@@ -20,7 +20,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { Redirect } from 'react-router-dom';
 import {
-  setSelectedClients,
+  addSelectedClients,
+  deleteSelectedClients,
   getSelectedClients
 } from '../actions/clientesActions';
 import { connect } from 'react-redux';
@@ -264,8 +265,6 @@ class EnhancedTable extends React.Component {
     if (event.target.checked) {
       this.setState(state => ({ selected: this.props.data.map(n => n.mci) }));
 
-      console.log(this.state.selected);
-
       return;
     }
     this.setState({ selected: [] });
@@ -277,26 +276,24 @@ class EnhancedTable extends React.Component {
   handleClick = (event, cliente) => {
     const { selected } = this.state;
 
-    console.log(cliente);
-
-    this.props.setSelectedClients(cliente);
     const selectedIndex = selected.indexOf(cliente.mci);
+
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, cliente.mci);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
+      /*  não existe add novo  selectedIndex === -1*/
 
-    console.log(this.props.clientSelected);
+      this.props.addSelectedClients(cliente);
+      newSelected = [...selected, cliente.mci];
+    } else if (selectedIndex >= 0) {
+      /**existe na lista  remove selectedIndex >= 0 */
+
+      newSelected = selected.filter(mci => {
+        return mci != cliente.mci;
+      });
+
+      this.props.deleteSelectedClients(cliente.mci);
+    }
 
     this.setState({ clientSelected: [cliente, ...this.state.clientSelected] });
 
@@ -320,7 +317,6 @@ class EnhancedTable extends React.Component {
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     let { gotoSolicitacao } = this.state;
-    console.log(this.props);
 
     if (gotoSolicitacao)
       return (
@@ -417,15 +413,16 @@ class EnhancedTable extends React.Component {
 
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  setSelectedClients: PropTypes.func.isRequired,
-  getSelectedClients: PropTypes.object.isRequired
+  addSelectedClients: PropTypes.func.isRequired,
+  deleteSelectedClients: PropTypes.func.isRequired,
+  getSelectedClients: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  selectedClients: state.clientes.selectedClientes
+  selectedClients: state.clientes.selectedClients
 });
 
 export default connect(
   mapStateToProps,
-  { setSelectedClients, getSelectedClients }
+  { addSelectedClients, getSelectedClients, deleteSelectedClients }
 )(withStyles(styles)(EnhancedTable));

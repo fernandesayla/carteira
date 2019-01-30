@@ -1,6 +1,7 @@
 import {
   GET_CLIENTES,
-  SET_SELECTED_CLIENTS,
+  DELETE_SELECTED_CLIENTS,
+  ADD_SELECTED_CLIENTS,
   GET_SELECTED_CLIENTS
 } from './types';
 import axios from 'axios';
@@ -21,8 +22,12 @@ export const getClientes = (gecex, carteira) => async dispatch => {
   dispatch({ type: GET_CLIENTES, payload: res.data.clientes });
 };
 
-export const setSelectedClients = client => {
-  return { type: SET_SELECTED_CLIENTS };
+export const addSelectedClients = client => {
+  return { type: ADD_SELECTED_CLIENTS, payload: client };
+};
+
+export const deleteSelectedClients = mci => {
+  return { type: DELETE_SELECTED_CLIENTS, payload: mci };
 };
 
 export const getSelectedClients = () => {
