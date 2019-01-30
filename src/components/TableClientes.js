@@ -18,7 +18,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import TrocaIcon from '@material-ui/icons/SwapHoriz';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import { Redirect } from 'react-router-dom';
 import {
   addSelectedClients,
   deleteSelectedClients,
@@ -240,9 +239,7 @@ class EnhancedTable extends React.Component {
       orderBy: 'id',
       selected: [],
       page: 0,
-      rowsPerPage: 5,
-      gotoSolicitacao: false,
-      clientSelected: []
+      rowsPerPage: 5
     };
   }
 
@@ -271,7 +268,7 @@ class EnhancedTable extends React.Component {
   };
 
   handleClickCriarSolicitacao = () => {
-    this.setState({ gotoSolicitacao: true });
+    this.props.history.push(`/homolog-carteira/solicitacoes`);
   };
   handleClick = (event, cliente) => {
     const { selected } = this.state;
@@ -295,8 +292,6 @@ class EnhancedTable extends React.Component {
       this.props.deleteSelectedClients(cliente.mci);
     }
 
-    this.setState({ clientSelected: [cliente, ...this.state.clientSelected] });
-
     this.setState({ selected: newSelected });
   };
 
@@ -316,21 +311,6 @@ class EnhancedTable extends React.Component {
     const { order, orderBy, selected, rowsPerPage, page } = this.state;
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-    let { gotoSolicitacao } = this.state;
-
-    if (gotoSolicitacao)
-      return (
-        <Redirect
-          to={{
-            pathname: `${this.props.path}/solicitacoes`,
-            state: {
-              selected: data.filter(item => {
-                return selected.indexOf(item.id) !== -1;
-              })
-            }
-          }}
-        />
-      );
 
     return (
       <Paper className={classes.root}>

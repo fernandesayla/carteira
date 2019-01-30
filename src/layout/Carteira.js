@@ -30,7 +30,7 @@ class Carteira extends Component {
         ) : null}
 
         {clientes.length > 0 ? (
-          <TableClientes data={clientes} />
+          <TableClientes data={clientes} {...this.props} />
         ) : (
           <EmptyTable msg={'Não há clientes'} />
         )}
