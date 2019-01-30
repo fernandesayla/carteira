@@ -1,5 +1,6 @@
 import { GET_CARTEIRAS, GET_CARTEIRA } from './types';
 import axios from 'axios';
+
 export const getCarteiras = () => async dispatch => {
   const res = await axios.get(
     `https://uce.intranet.bb.com.br/api-carteira/v1/carteira/`,

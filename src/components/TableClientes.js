@@ -19,6 +19,12 @@ import TrocaIcon from '@material-ui/icons/SwapHoriz';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { Redirect } from 'react-router-dom';
+import {
+  setSelectedClients,
+  getSelectedClients
+} from '../actions/clientesActions';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -53,14 +59,29 @@ const rows = [
     disablePadding: true,
     label: 'Nome'
   },
-  { id: 'segmento', disablePadding: true, label: 'Segmento' },
-  { id: 'prefixo_nome', disablePadding: true, label: 'Agência' },
+  {
+    id: 'prefixo_grupo_negocial',
+    disablePadding: true,
+    label: 'Prefixo GN'
+  },
+  {
+    id: 'carteira_grupo_negocial',
+    disablePadding: true,
+    label: 'Carteira GN'
+  },
+  {
+    id: 'sequencial_grupo_negocial',
+    disablePadding: true,
+    label: 'Seq. GN'
+  },
+  { id: 'nm_prefixo', disablePadding: true, label: 'Agência' },
   { id: 'cidade', disablePadding: true, label: 'Cidade' },
+
   { id: 'bairro', disablePadding: true, label: 'Bairro' },
   {
-    id: 'dt_encarteiramento',
+    id: 'dt_create',
     disablePadding: true,
-    label: 'Dt Encarteiramento'
+    label: 'Encarteirado em'
   }
 ];
 
@@ -219,8 +240,13 @@ class EnhancedTable extends React.Component {
       selected: [],
       page: 0,
       rowsPerPage: 5,
-      gotoSolicitacao: false
+      gotoSolicitacao: false,
+      clientSelected: []
     };
+  }
+
+  componentDidMount() {
+    this.props.getSelectedClients();
   }
 
   handleRequestSort = (event, property) => {
@@ -236,7 +262,10 @@ class EnhancedTable extends React.Component {
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: this.props.data.map(n => n.id) }));
+      this.setState(state => ({ selected: this.props.data.map(n => n.mci) }));
+
+      console.log(this.state.selected);
+
       return;
     }
     this.setState({ selected: [] });
@@ -245,13 +274,17 @@ class EnhancedTable extends React.Component {
   handleClickCriarSolicitacao = () => {
     this.setState({ gotoSolicitacao: true });
   };
-  handleClick = (event, id) => {
+  handleClick = (event, cliente) => {
     const { selected } = this.state;
-    const selectedIndex = selected.indexOf(id);
+
+    console.log(cliente);
+
+    this.props.setSelectedClients(cliente);
+    const selectedIndex = selected.indexOf(cliente.mci);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, cliente.mci);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -262,6 +295,10 @@ class EnhancedTable extends React.Component {
         selected.slice(selectedIndex + 1)
       );
     }
+
+    console.log(this.props.clientSelected);
+
+    this.setState({ clientSelected: [cliente, ...this.state.clientSelected] });
 
     this.setState({ selected: newSelected });
   };
@@ -283,12 +320,13 @@ class EnhancedTable extends React.Component {
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
     let { gotoSolicitacao } = this.state;
+    console.log(this.props);
 
     if (gotoSolicitacao)
       return (
         <Redirect
           to={{
-            pathname: '/carteira/solicitacoes',
+            pathname: `${this.props.path}/solicitacoes`,
             state: {
               selected: data.filter(item => {
                 return selected.indexOf(item.id) !== -1;
@@ -318,27 +356,34 @@ class EnhancedTable extends React.Component {
               {stableSort(data, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((n, index) => {
-                  const isSelected = this.isSelected(n.id);
+                  const isSelected = this.isSelected(n.mci);
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
+                      onClick={event => this.handleClick(event, n)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={n.id}
+                      key={n.mci}
                       selected={isSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
                       <TableCell component="th" scope="row" padding="none">
-                        {n.id}
+                        {n.mci}
                       </TableCell>
-                      <TableCell>{n.gecex}</TableCell>
-                      <TableCell>{n.solicitacoes}</TableCell>
-                      <TableCell>{n.genin}</TableCell>
-                      <TableCell>{n.qtd_clientes}</TableCell>
+                      <TableCell>{n.nome}</TableCell>
+                      <TableCell>{n.prefixo_grupo_negocial}</TableCell>
+                      <TableCell>{n.carteira_grupo_negocial}</TableCell>
+                      <TableCell>{n.sequencial_grupo_negocial}</TableCell>
+
+                      <TableCell>{n.nm_prefixo}</TableCell>
+                      <TableCell>{n.cidade}</TableCell>
+                      <TableCell>{n.bairro}</TableCell>
+                      <TableCell>
+                        {moment(n.dt_create).format('DD/MM/YYYY')}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -350,6 +395,7 @@ class EnhancedTable extends React.Component {
             </TableBody>
           </Table>
         </div>
+
         <TablePagination
           component="div"
           count={data.length}
@@ -370,7 +416,16 @@ class EnhancedTable extends React.Component {
 }
 
 EnhancedTable.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  setSelectedClients: PropTypes.func.isRequired,
+  getSelectedClients: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(EnhancedTable);
+const mapStateToProps = state => ({
+  selectedClients: state.clientes.selectedClientes
+});
+
+export default connect(
+  mapStateToProps,
+  { setSelectedClients, getSelectedClients }
+)(withStyles(styles)(EnhancedTable));

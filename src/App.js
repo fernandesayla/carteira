@@ -18,8 +18,9 @@ import { withStyles } from '@material-ui/core/styles';
 import Carteira from './layout/Carteira';
 import Solicitacoes from './layout/Solicitacoes';
 import Validacoes from './layout/Validacoes';
-
+import Alert from './layout/Alert';
 import { isUCE, autentica } from './auth';
+import { Typography } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -44,11 +45,15 @@ class App extends Component {
       mobileOpen: false,
       user: {},
       token: '',
-      autenticado: ''
+      autenticado: '',
+      message: '',
+      messageType: ''
     };
   }
 
   componentWillMount() {
+    const { message, messageType } = this.state;
+
     autentica()
       .then(response => {
         if (response.status > 350) {
@@ -63,25 +68,38 @@ class App extends Component {
 
         return response.json();
       })
+
       .then(data => {
         this.setState({ user: data.user[0] });
 
         this.setState({ autenticado: true });
       })
-
-      .catch(function(err) {
-        return false;
-        /* window.location =
-          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';*/
+      .catch(error => {
+        this.setState({
+          message:
+            'Não foi possivel logar no servidor remoto, por favor, contatar UCE'
+        });
+        console.error('Error:', error);
+        /*  this.setMessage();*/
+        /* return message ? (
+          <Alert message={message} messageType={messageType} />
+        ) : null;
+*/
+        window.location =
+          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';
       });
   }
+
+  setMessage = (message, messageType) => {
+    this.setState({ message: message, messageType: 'error' });
+  };
   handleDrawerToggle = () => {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
   render() {
     const { classes } = this.props;
-    const { user, mobileOpen } = this.state;
+    const { mobileOpen, message, messageType, user } = this.state;
     const path = '/homolog-carteira';
     /*  const path = '/carteira'; desmarcar para produção  */
     return (
@@ -89,6 +107,9 @@ class App extends Component {
         <Router initialEntries={[path]} initialIndex={0}>
           <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
+              {message ? (
+                <Typography variant="subtitle1">{message}</Typography>
+              ) : null}
               <AppNavbar
                 handleDrawerToggle={this.handleDrawerToggle}
                 user={user}
@@ -114,19 +135,15 @@ class App extends Component {
                     }
                   />
                   <Route
-                    exact
-                    path={`${path}/:prefixo`}
-                    render={props =>
-                      this.state.autenticado ? (
-                        <Carteiras user={user} path={path} {...props} />
-                      ) : null
-                    }
+                    path={`${path}/solicitacoes`}
+                    component={Solicitacoes}
                   />
+                  <Route path={`${path}/validacoes`} component={Validacoes} />
                   <Route
-                    exact
                     path={`${path}/cadastrar`}
                     component={isUCE(user) ? CadastraCarteira : null}
                   />
+
                   <Route
                     exact
                     path={`${path}/:gecex/:carteira`}
@@ -134,14 +151,12 @@ class App extends Component {
                   />
                   <Route
                     exact
-                    path={`${path}/solicitacoes`}
-                    component={Solicitacoes}
-                  />
-
-                  <Route
-                    exact
-                    path={`${path}/validacoes`}
-                    component={Validacoes}
+                    path={`${path}/:prefixo`}
+                    render={props =>
+                      this.state.autenticado ? (
+                        <Carteiras user={user} path={path} {...props} />
+                      ) : null
+                    }
                   />
                 </Switch>
               </main>
