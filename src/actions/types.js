@@ -6,6 +6,8 @@ export const ADD_CARTEIRA = 'ADD_CARTEIRA';
 
 export const UPDATE_CARTEIRA = 'UPDATE_CARTEIRA';
 
+export const GET_GECEX = 'GET_GECEX';
+
 /** USER */
 export const GET_USER = 'GET_USER';
 

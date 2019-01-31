@@ -16,9 +16,9 @@ import Carteiras from './layout/Carteiras';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Carteira from './layout/Carteira';
-import Solicitacoes from './layout/Solicitacoes';
+import Solicitacoes from './layout/solicitacoes/Solicitacoes';
 import Validacoes from './layout/Validacoes';
-import Alert from './layout/Alert';
+
 import { isUCE, autentica } from './auth';
 import { Typography } from '@material-ui/core';
 

@@ -15,14 +15,14 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import TrocaIcon from '@material-ui/icons/SwapHoriz';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import Delete from '@material-ui/icons/Delete';
+
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import {
   addSelectedClients,
   deleteSelectedClients,
   getSelectedClients
-} from '../actions/clientesActions';
+} from '../../actions/clientesActions';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -170,7 +170,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, handleClickCriarSolicitacao } = props;
+  const { numSelected, classes, handleClickRemoverCliente } = props;
 
   return (
     <Toolbar
@@ -191,22 +191,13 @@ let EnhancedTableToolbar = props => {
       <div className={classes.actions}>
         {numSelected > 0 ? (
           <div className={classes.actions}>
-            <Tooltip title="Solicitar Alteração">
-              <IconButton
-                aria-label="Edit"
-                onClick={handleClickCriarSolicitacao}
-              >
-                <TrocaIcon />
+            <Tooltip title="Remover cliente da Lista">
+              <IconButton aria-label="Edit" onClick={handleClickRemoverCliente}>
+                <Delete />
               </IconButton>
             </Tooltip>
           </div>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+        ) : null}
       </div>
     </Toolbar>
   );
@@ -267,8 +258,12 @@ class EnhancedTable extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleClickCriarSolicitacao = () => {
-    this.props.history.push(`/homolog-carteira/solicitacoes`);
+  handleClickRemoverCliente = () => {
+    const { selected } = this.state;
+
+    selected.map(mci => this.props.deleteSelectedClients(mci));
+
+    this.setState({ selected: [] });
   };
   handleClick = (event, cliente) => {
     const { selected } = this.state;
@@ -316,7 +311,7 @@ class EnhancedTable extends React.Component {
       <Paper className={classes.root}>
         <EnhancedTableToolbar
           numSelected={selected.length}
-          handleClickCriarSolicitacao={this.handleClickCriarSolicitacao}
+          handleClickRemoverCliente={this.handleClickRemoverCliente}
         />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">

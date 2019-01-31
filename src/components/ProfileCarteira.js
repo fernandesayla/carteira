@@ -50,7 +50,6 @@ const styles = {
 
 const ProfileCarteira = props => {
   const { carteira, classes } = props;
-  console.log(carteira);
 
   return (
     <Paper>
