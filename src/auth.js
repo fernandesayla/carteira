@@ -20,7 +20,7 @@ function getCookie(cname) {
 
 export const autentica = () => {
   return fetch(
-    `https://uce.intranet.bb.com.br/api-timeline/v1/autenticar/${getCookie(
+    `https://uce.intranet.bb.com.br/api-carteira/v1/autenticar/${getCookie(
       'BBSSOToken'
     )}`,
     {

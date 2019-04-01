@@ -156,7 +156,7 @@ class Carteiras extends Component {
       <div>
         <Paper className={classes.filters}>
           <Typography variant="h6">Filtros</Typography>
-          {isUCE(user) ? (
+          {!isUCE(user) ? (
             <FormControl fullWidth className={classes.formControl}>
               <InputLabel htmlFor="gecex-simple" shrink={true}>
                 Gecex

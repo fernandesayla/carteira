@@ -2,7 +2,7 @@ import { GET_USER } from './types';
 import axios from 'axios';
 export const getUser = () => async dispatch => {
   const res = await axios.get(
-    `https://uce.intranet.bb.com.br/api-timeline/v1/autenticar/${getCookie(
+    `https://uce.intranet.bb.com.br/api-carteira/v1/autenticar/${getCookie(
       'BBSSOToken'
     )}`,
     {
