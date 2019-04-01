@@ -86,7 +86,7 @@ class App extends Component {
         ) : null;
 */
         window.location =
-          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/carteira/';
+          'https://login.intranet.bb.com.br/distAuth/UI/Login?goto=https://uce.intranet.bb.com.br/homolog-carteira/';
       });
   }
 
